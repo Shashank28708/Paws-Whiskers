@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - Paws & Whiskers Pet Shop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/4b8b59b1b2.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #9C27B0 0%, #00BCD4 100%);
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+    .filter-btn.active {
+      background-color: #9C27B0;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Sticky Header Navigation -->
+  <nav class="fixed w-full bg-white shadow-lg z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex-shrink-0 flex items-center">
+          <img class="h-10 w-auto" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Pet Shop Logo" />
+          <span class="ml-2 font-bold text-xl text-purple-600">Paws & Whiskers</span>
+        </div>
+        <div class="hidden md:flex space-x-8">
+          <a href="index.html" class="hover:text-purple-600 font-medium transition-colors">Home</a>
+          <a href="shop.html" class="text-purple-600 font-medium">Shop</a>
+          <a href="services.html" class="hover:text-purple-600 font-medium transition-colors">Services</a>
+          <a href="about.html" class="hover:text-purple-600 font-medium transition-colors">About</a>
+          <a href="contact.html" class="hover:text-purple-600 font-medium transition-colors">Contact</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="text-gray-600 hover:text-purple-600 transition-colors">
+            
+          </button>
+          <button id="cart-btn" class="relative text-gray-600 hover:text-purple-600 transition-colors p-2 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-lg">0</span>
+          </button>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="focus:outline-none">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 bg-white border-t">
+      <a href="index.html" class="block py-2 hover:text-purple-600 font-medium">Home</a>
+      <a href="shop.html" class="block py-2 text-purple-600 font-medium">Shop</a>
+      <a href="services.html" class="block py-2 hover:text-purple-600 font-medium">Services</a>
+      <a href="about.html" class="block py-2 hover:text-purple-600 font-medium">About</a>
+      <a href="index.html" class="block py-2 hover:text-purple-600 font-medium">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Shopping Cart Sidebar -->
+  <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class="flex flex-col h-full">
+      <!-- Cart Header -->
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shopping-cart text-2xl text-purple-600"></i>
+          <h2 class="text-xl font-bold text-gray-800">Shopping Cart</h2>
+        </div>
+        <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Cart Items -->
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+        <!-- Cart items will be dynamically added here -->
+        <div id="empty-cart" class="text-center py-8">
+          <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+          <p class="text-gray-500">Your cart is empty</p>
+        </div>
+      </div>
+      
+      <!-- Cart Footer -->
+      <div class="border-t border-gray-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-lg font-semibold">Total:</span>
+          <span id="cart-total" class="text-xl font-bold text-purple-600">$0.00</span>
+        </div>
+        <button id="checkout-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          Proceed to Checkout
+        </button>
+        <button id="clear-cart" class="w-full mt-2 bg-gray-200 text-gray-800 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+          Clear Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Overlay -->
+  <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+  <!-- Shop Hero Section -->
+  <section class="pt-16 gradient-bg min-h-[40vh] flex items-center justify-center">
+    <div class="text-center text-white max-w-4xl mx-auto px-4">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">Pet Shop</h1>
+      <p class="text-xl md:text-2xl mb-8">Discover quality products for your beloved pets</p>
+    </div>
+  </section>
+
+  <!-- Product Filters -->
+  <section class="py-8 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-wrap justify-center gap-4">
+        <button class="filter-btn active bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-colors font-medium" data-category="all">All Products</button>
+        <button class="filter-btn bg-gray-200 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors font-medium" data-category="dogs">Dogs</button>
+        <button class="filter-btn bg-gray-200 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors font-medium" data-category="cats">Cats</button>
+        <button class="filter-btn bg-gray-200 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors font-medium" data-category="birds">Birds</button>
+        <button class="filter-btn bg-gray-200 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-300 transition-colors font-medium" data-category="fish">Fish</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Our Products</h2>
+        <p class="text-lg text-gray-600">Find the perfect products for your pets</p>
+      </div>
+      
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Products will be dynamically loaded here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center mb-4">
+            <img class="h-8 w-auto" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Pet Shop Logo" />
+            <span class="ml-2 font-bold text-xl">Paws & Whiskers</span>
+          </div>
+          <p class="text-gray-300 mb-4">Your trusted partner in pet care and supplies.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-facebook fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-instagram fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-twitter fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-youtube fa-lg"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+            <li><a href="shop.html" class="text-gray-300 hover:text-white transition-colors">Shop</a></li>
+            <li><a href="index.html#services" class="text-gray-300 hover:text-white transition-colors">Services</a></li>
+            <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+            <li><a href="contact.html" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Services</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Grooming</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Veterinary Care</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Training</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Boarding</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Pet Adoption</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Newsletter</h3>
+          <p class="text-gray-300 mb-4">Subscribe for updates and special offers!</p>
+          <form class="flex">
+            <input type="email" placeholder="Your email" class="px-3 py-2 rounded-l-lg text-gray-800 focus:outline-none flex-1" />
+            <button type="submit" class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-r-lg hover:bg-yellow-500 transition-colors">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+        <p class="text-gray-400">&copy; 2024 Paws & Whiskers. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+ 
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+    <div class="flex justify-around py-2">
+      <a href="index.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-home text-lg"></i>
+        <span class="text-xs mt-1">Home</span>
+      </a>
+      <a href="shop.html" class="flex flex-col items-center text-purple-600">
+        <i class="fas fa-shopping-bag text-lg"></i>
+        <span class="text-xs mt-1">Shop</span>
+      </a>
+      <a href="services.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-cut text-lg"></i>
+        <span class="text-xs mt-1">Services</span>
+      </a>
+      <a href="contact.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-phone text-lg"></i>
+        <span class="text-xs mt-1">Contact</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Product data
+    const products = [
+      // Dog Products
+      {
+        id: 1,
+        name: "Squeaky Dog Toy",
+        price: 12.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=300&h=300&fit=crop",
+        tag: "BESTSELLER"
+      },
+      {
+        id: 2,
+        name: "Premium Dog Food",
+        price: 34.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop",
+        tag: "PREMIUM"
+      },
+      {
+        id: 3,
+        name: "Dog Collar & Leash Set",
+        price: 24.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop",
+        tag: "POPULAR"
+      },
+      {
+        id: 4,
+        name: "Dog Bed",
+        price: 59.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=300&h=300&fit=crop"
+      },
+      {
+        id: 5,
+        name: "Dog Shampoo",
+        price: 15.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop"
+      },
+      {
+        id: 6,
+        name: "Dog Treats",
+        price: 8.99,
+        category: "dogs",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "NEW"
+      },
+
+      // Cat Products
+      {
+        id: 7,
+        name: "Premium Cat Food",
+        price: 24.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop",
+        tag: "NEW"
+      },
+      {
+        id: 8,
+        name: "Cat Scratching Post",
+        price: 45.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=300&h=300&fit=crop",
+        tag: "POPULAR"
+      },
+      {
+        id: 9,
+        name: "Cat Litter Box",
+        price: 29.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=300&h=300&fit=crop"
+      },
+      {
+        id: 10,
+        name: "Cat Toys Set",
+        price: 18.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=300&h=300&fit=crop",
+        tag: "BESTSELLER"
+      },
+      {
+        id: 11,
+        name: "Cat Carrier",
+        price: 39.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=300&h=300&fit=crop"
+      },
+      {
+        id: 12,
+        name: "Cat Grooming Kit",
+        price: 22.99,
+        category: "cats",
+        image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=300&fit=crop"
+      },
+
+      // Bird Products
+      {
+        id: 13,
+        name: "Spacious Bird Cage",
+        price: 89.99,
+        category: "birds",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop"
+      },
+      {
+        id: 14,
+        name: "Bird Seed Mix",
+        price: 12.99,
+        category: "birds",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "POPULAR"
+      },
+      {
+        id: 15,
+        name: "Bird Perches",
+        price: 16.99,
+        category: "birds",
+        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop"
+      },
+      {
+        id: 16,
+        name: "Bird Toys",
+        price: 14.99,
+        category: "birds",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "NEW"
+      },
+
+      // Fish Products
+      {
+        id: 17,
+        name: "AquaPro Fish Tank",
+        price: 149.99,
+        category: "fish",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "SALE"
+      },
+      {
+        id: 18,
+        name: "Fish Food",
+        price: 9.99,
+        category: "fish",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "BESTSELLER"
+      },
+      {
+        id: 19,
+        name: "Aquarium Filter",
+        price: 34.99,
+        category: "fish",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop"
+      },
+      {
+        id: 20,
+        name: "Fish Tank Decorations",
+        price: 19.99,
+        category: "fish",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop",
+        tag: "POPULAR"
+      }
+    ];
+
+    // Cart functionality
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cartCount = 0;
+    
+    // Debug: Log cart state on page load
+    console.log('Shop page - Cart loaded:', cart);
+    const cartCountSpan = document.getElementById('cart-count');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const clearCartBtn = document.getElementById('clear-cart');
+    const closeCartBtn = document.getElementById('close-cart');
+    const cartBtn = document.getElementById('cart-btn');
+    const productsGrid = document.getElementById('products-grid');
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Product filtering
+    function filterProducts(category) {
+      const filteredProducts = category === 'all' ? products : products.filter(product => product.category === category);
+      displayProducts(filteredProducts);
+    }
+
+    function displayProducts(productsToShow) {
+      productsGrid.innerHTML = productsToShow.map(product => `
+        <div class="product-card bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+          <div class="relative mb-4">
+            <img src="${product.image}" alt="${product.name}" class="h-48 w-48 object-cover rounded-lg" />
+            ${product.tag ? `<span class="absolute top-2 right-2 bg-yellow-400 text-gray-800 px-2 py-1 rounded-full text-xs font-bold">${product.tag}</span>` : ''}
+          </div>
+          <h3 class="font-semibold text-lg mb-2 text-center">${product.name}</h3>
+          <p class="text-purple-600 font-bold text-xl mb-4">$${product.price}</p>
+          <button class="add-to-cart bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors w-full"
+                  data-name="${product.name}" 
+                  data-price="${product.price}" 
+                  data-image="${product.image}">Add to Cart</button>
+        </div>
+      `).join('');
+
+      // Re-attach event listeners to new buttons
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const name = btn.getAttribute('data-name');
+          const price = btn.getAttribute('data-price');
+          const image = btn.getAttribute('data-image');
+          addToCart(name, price, image);
+        });
+      });
+    }
+
+    // Cart functions
+    function updateCartDisplay() {
+      // Ensure cart is an array
+      if (!Array.isArray(cart)) {
+        cart = [];
+      }
+      
+      // Validate cart items and ensure proper data types
+      cart = cart.filter(item => {
+        if (!item || typeof item.name !== 'string') return false;
+        
+        // Ensure price is a number
+        const price = parseFloat(item.price);
+        if (isNaN(price) || price <= 0) return false;
+        
+        // Ensure quantity is a number and positive
+        const quantity = parseInt(item.quantity);
+        if (isNaN(quantity) || quantity <= 0) return false;
+        
+        // Update the item with proper data types
+        item.price = price;
+        item.quantity = quantity;
+        
+        return true;
+      });
+      
+      cartCount = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+      cartCountSpan.textContent = cartCount;
+      
+      // Save cart to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div id="empty-cart" class="text-center py-8">
+            <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">Your cart is empty</p>
+          </div>
+        `;
+        cartTotal.textContent = '$0.00';
+        checkoutBtn.disabled = true;
+      } else {
+        const total = cart.reduce((sum, item) => {
+          const price = parseFloat(item.price) || 0;
+          const quantity = parseInt(item.quantity) || 0;
+          return sum + (price * quantity);
+        }, 0);
+        cartTotal.textContent = `$${total.toFixed(2)}`;
+        checkoutBtn.disabled = false;
+        
+        cartItems.innerHTML = cart.map((item, index) => `
+          <div class="flex items-center space-x-4 mb-4 p-4 bg-gray-50 rounded-lg">
+            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">${item.name}</h4>
+              <p class="text-purple-600 font-bold">$${item.price}</p>
+              <div class="flex items-center space-x-2 mt-2">
+                <button onclick="updateQuantity(${index}, -1)" class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                  <i class="fas fa-minus text-xs"></i>
+                </button>
+                <span class="w-8 text-center">${item.quantity}</span>
+                <button onclick="updateQuantity(${index}, 1)" class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                  <i class="fas fa-plus text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function addToCart(name, price, image) {
+      const existingItem = cart.find(item => item.name === name);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          name: name,
+          price: parseFloat(price),
+          image: image,
+          quantity: 1
+        });
+      }
+      
+      updateCartDisplay();
+      
+      // Show success message
+      const btn = event.target;
+      btn.textContent = 'Added!';
+      btn.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+      btn.classList.add('bg-green-500');
+      setTimeout(() => {
+        btn.textContent = 'Add to Cart';
+        btn.classList.remove('bg-green-500');
+        btn.classList.add('bg-purple-600', 'hover:bg-purple-700');
+      }, 1000);
+    }
+
+    function updateQuantity(index, change) {
+      cart[index].quantity += change;
+      
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      
+      updateCartDisplay();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartDisplay();
+      // Clear from localStorage
+      localStorage.removeItem('cart');
+    }
+
+    function openCart() {
+      cartSidebar.classList.remove('translate-x-full');
+      cartOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      cartSidebar.classList.add('translate-x-full');
+      cartOverlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Event listeners
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+    clearCartBtn.addEventListener('click', clearCart);
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length > 0) {
+        alert('Thank you for your order! Total: $' + cartTotal.textContent.replace('$', ''));
+        clearCart();
+        closeCart();
+        // Clear from localStorage after checkout
+        localStorage.removeItem('cart');
+      }
+    });
+
+    // Filter button event listeners
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('active', 'bg-purple-600', 'text-white');
+          b.classList.add('bg-gray-200', 'text-gray-800');
+        });
+        
+        // Add active class to clicked button
+        btn.classList.remove('bg-gray-200', 'text-gray-800');
+        btn.classList.add('active', 'bg-purple-600', 'text-white');
+        
+        // Filter products
+        const category = btn.getAttribute('data-category');
+        filterProducts(category);
+      });
+    });
+
+    // Newsletter form
+    document.querySelectorAll('form').forEach(form => {
+      if (form.querySelector('input[type="email"]') && !form.id) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = this.querySelector('input[type="email"]').value;
+          if (email) {
+            alert('Thank you for subscribing to our newsletter!');
+            this.reset();
+          }
+        });
+      }
+    });
+
+    // Initialize
+    displayProducts(products);
+    updateCartDisplay();
+  </script>
+</body>
+</html>

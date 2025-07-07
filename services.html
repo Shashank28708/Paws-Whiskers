@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services - Paws & Whiskers Pet Shop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/4b8b59b1b2.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #9C27B0 0%, #00BCD4 100%);
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+    .floating-chat {
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Sticky Header Navigation -->
+  <nav class="fixed w-full bg-white shadow-lg z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex-shrink-0 flex items-center">
+          <img class="h-10 w-auto" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Pet Shop Logo" />
+          <span class="ml-2 font-bold text-xl text-purple-600">Paws & Whiskers</span>
+        </div>
+        <div class="hidden md:flex space-x-8">
+          <a href="index.html" class="hover:text-purple-600 font-medium transition-colors">Home</a>
+          <a href="shop.html" class="hover:text-purple-600 font-medium transition-colors">Shop</a>
+          <a href="services.html" class="text-purple-600 font-medium">Services</a>
+          <a href="about.html" class="hover:text-purple-600 font-medium transition-colors">About</a>
+          <a href="index.html#contact" class="hover:text-purple-600 font-medium transition-colors">Contact</a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="text-gray-600 hover:text-purple-600 transition-colors">
+            
+          </button>
+          <button id="cart-btn" class="relative text-gray-600 hover:text-purple-600 transition-colors p-2 rounded-lg hover:bg-gray-100">
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-lg">0</span>
+          </button>
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="focus:outline-none">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 bg-white border-t">
+      <a href="index.html" class="block py-2 hover:text-purple-600 font-medium">Home</a>
+      <a href="shop.html" class="block py-2 hover:text-purple-600 font-medium">Shop</a>
+      <a href="services.html" class="block py-2 text-purple-600 font-medium">Services</a>
+      <a href="about.html" class="block py-2 hover:text-purple-600 font-medium">About</a>
+      <a href="index.html#contact" class="block py-2 hover:text-purple-600 font-medium">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Shopping Cart Sidebar -->
+  <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+    <div class="flex flex-col h-full">
+      <!-- Cart Header -->
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-shopping-cart text-2xl text-purple-600"></i>
+          <h2 class="text-xl font-bold text-gray-800">Shopping Cart</h2>
+        </div>
+        <button id="close-cart" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Cart Items -->
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6">
+        <!-- Cart items will be dynamically added here -->
+        <div id="empty-cart" class="text-center py-8">
+          <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+          <p class="text-gray-500">Your cart is empty</p>
+        </div>
+      </div>
+      
+      <!-- Cart Footer -->
+      <div class="border-t border-gray-200 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-lg font-semibold">Total:</span>
+          <span id="cart-total" class="text-xl font-bold text-purple-600">$0.00</span>
+        </div>
+        <button id="checkout-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          Proceed to Checkout
+        </button>
+        <button id="clear-cart" class="w-full mt-2 bg-gray-200 text-gray-800 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+          Clear Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Overlay -->
+  <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+  <!-- Services Hero Section -->
+  <section class="pt-16 gradient-bg min-h-[50vh] flex items-center justify-center">
+    <div class="text-center text-white max-w-4xl mx-auto px-4">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">Our Services</h1>
+      <p class="text-xl md:text-2xl mb-8">Professional care for your beloved pets</p>
+      <p class="text-lg opacity-90">From grooming to veterinary care, we provide comprehensive services to keep your pets healthy and happy.</p>
+    </div>
+  </section>
+
+  <!-- Service Categories Overview -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">What We Offer</h2>
+        <p class="text-lg text-gray-600">Comprehensive pet care services tailored to your needs</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="service-card bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+          <i class="fas fa-cut text-5xl text-purple-600 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-3">Grooming</h3>
+          <p class="text-gray-600 mb-4">Professional grooming for all breeds and sizes</p>
+          <a href="#grooming" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">Learn More</a>
+        </div>
+        
+        <div class="service-card bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+          <i class="fas fa-stethoscope text-5xl text-cyan-500 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-3">Veterinary</h3>
+          <p class="text-gray-600 mb-4">Expert veterinary care and health checks</p>
+          <a href="#veterinary" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">Learn More</a>
+        </div>
+        
+        <div class="service-card bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+          <i class="fas fa-dog text-5xl text-yellow-500 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-3">Training</h3>
+          <p class="text-gray-600 mb-4">Professional training for dogs of all ages</p>
+          <a href="#training" class="inline-block bg-yellow-500 text-gray-800 px-6 py-2 rounded-lg hover:bg-yellow-600 transition-colors">Learn More</a>
+        </div>
+        
+        <div class="service-card bg-gray-50 rounded-xl p-6 text-center hover:shadow-lg transition-shadow">
+          <i class="fas fa-home text-5xl text-purple-600 mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-800 mb-3">Boarding</h3>
+          <p class="text-gray-600 mb-4">Safe and comfortable boarding facilities</p>
+          <a href="#boarding" class="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grooming Service Section -->
+  <section id="grooming" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-4xl font-bold text-gray-800 mb-6">Professional Grooming Services</h2>
+          <p class="text-lg text-gray-600 mb-6">Our certified groomers provide top-quality grooming services for all breeds and sizes. We use premium products and gentle techniques to ensure your pet looks and feels their best.</p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Bath & Brush</h4>
+                <p class="text-gray-600">Complete bath with premium shampoo, conditioning, and thorough brushing</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Haircut & Styling</h4>
+                <p class="text-gray-600">Professional haircuts tailored to breed standards or your preferences</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Nail Trimming</h4>
+                <p class="text-gray-600">Safe nail trimming and filing for comfort and health</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Ear Cleaning</h4>
+                <p class="text-gray-600">Gentle ear cleaning to prevent infections and maintain health</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Pricing</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span>Small Dogs (under 25 lbs)</span>
+                <span class="font-bold text-purple-600">$45</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Medium Dogs (25-50 lbs)</span>
+                <span class="font-bold text-purple-600">$65</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Large Dogs (over 50 lbs)</span>
+                <span class="font-bold text-purple-600">$85</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Cats</span>
+                <span class="font-bold text-purple-600">$55</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=300&h=300&fit=crop" alt="Grooming" class="rounded-lg" />
+          <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=300&h=300&fit=crop" alt="Grooming" class="rounded-lg mt-8" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Veterinary Service Section -->
+  <section id="veterinary" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="order-2 lg:order-1">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop" alt="Veterinary Care" class="rounded-lg" />
+        </div>
+        
+        <div class="order-1 lg:order-2">
+          <h2 class="text-4xl font-bold text-gray-800 mb-6">Veterinary Care</h2>
+          <p class="text-lg text-gray-600 mb-6">Our experienced veterinarians provide comprehensive health care for your pets. From routine checkups to emergency care, we're here to keep your pets healthy and happy.</p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Wellness Exams</h4>
+                <p class="text-gray-600">Comprehensive health checkups including vaccinations and parasite prevention</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Diagnostic Services</h4>
+                <p class="text-gray-600">Advanced diagnostic testing including blood work, x-rays, and ultrasounds</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Surgical Procedures</h4>
+                <p class="text-gray-600">Safe surgical procedures in our state-of-the-art facility</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Emergency Care</h4>
+                <p class="text-gray-600">24/7 emergency veterinary care for urgent situations</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Services & Pricing</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span>Wellness Exam</span>
+                <span class="font-bold text-cyan-600">$75</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Vaccinations</span>
+                <span class="font-bold text-cyan-600">$25-45</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Dental Cleaning</span>
+                <span class="font-bold text-cyan-600">$150</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Spay/Neuter</span>
+                <span class="font-bold text-cyan-600">$200-350</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training Service Section -->
+  <section id="training" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-4xl font-bold text-gray-800 mb-6">Professional Dog Training</h2>
+          <p class="text-lg text-gray-600 mb-6">Our certified dog trainers use positive reinforcement techniques to help your dog develop good behavior and strong bonds with their family. We offer both group and private training sessions.</p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Puppy Training</h4>
+                <p class="text-gray-600">Essential skills for puppies including potty training and basic commands</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Basic Obedience</h4>
+                <p class="text-gray-600">Core commands: sit, stay, come, heel, and leash walking</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Behavior Modification</h4>
+                <p class="text-gray-600">Addressing issues like aggression, anxiety, and excessive barking</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Advanced Training</h4>
+                <p class="text-gray-600">Specialized training for therapy dogs, service dogs, and competition</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Training Programs</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span>Puppy Training (6 weeks)</span>
+                <span class="font-bold text-yellow-600">$180</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Basic Obedience (8 weeks)</span>
+                <span class="font-bold text-yellow-600">$240</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Private Training (per session)</span>
+                <span class="font-bold text-yellow-600">$60</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Behavior Consultation</span>
+                <span class="font-bold text-yellow-600">$85</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=300&h=300&fit=crop" alt="Training" class="rounded-lg" />
+          <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=300&h=300&fit=crop" alt="Training" class="rounded-lg mt-8" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boarding Service Section -->
+  <section id="boarding" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="order-2 lg:order-1">
+          <img src="https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=300&h=300&fit=crop" alt="Boarding" class="rounded-lg" />
+        </div>
+        
+        <div class="order-1 lg:order-2">
+          <h2 class="text-4xl font-bold text-gray-800 mb-6">Pet Boarding & Daycare</h2>
+          <p class="text-lg text-gray-600 mb-6">When you're away, trust us to care for your pets in our comfortable, safe, and stimulating environment. Our boarding facility provides 24/7 care with plenty of playtime and attention.</p>
+          
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">24/7 Care</h4>
+                <p class="text-gray-600">Round-the-clock supervision and care for your pets</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Individual Suites</h4>
+                <p class="text-gray-600">Comfortable, clean accommodations with proper ventilation</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Playtime & Exercise</h4>
+                <p class="text-gray-600">Regular exercise and socialization with other pets</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-check-circle text-green-500 mt-1"></i>
+              <div>
+                <h4 class="font-semibold text-gray-800">Medical Care</h4>
+                <p class="text-gray-600">On-site veterinary care and medication administration</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Boarding Rates</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span>Small Dogs (under 25 lbs)</span>
+                <span class="font-bold text-purple-600">$35/night</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Medium Dogs (25-50 lbs)</span>
+                <span class="font-bold text-purple-600">$40/night</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Large Dogs (over 50 lbs)</span>
+                <span class="font-bold text-purple-600">$45/night</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Cats</span>
+                <span class="font-bold text-purple-600">$25/night</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Daycare (per day)</span>
+                <span class="font-bold text-purple-600">$25</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Section -->
+  <section class="py-16 gradient-bg">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-white mb-4">Book Your Service</h2>
+        <p class="text-xl text-white opacity-90">Schedule an appointment for any of our services</p>
+      </div>
+      
+      <form class="bg-white rounded-xl p-8 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Service Type</label>
+            <select class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600">
+              <option>Select a service</option>
+              <option>Grooming</option>
+              <option>Veterinary Checkup</option>
+              <option>Training Session</option>
+              <option>Boarding</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Pet Type</label>
+            <select class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600">
+              <option>Select pet type</option>
+              <option>Dog</option>
+              <option>Cat</option>
+              <option>Bird</option>
+              <option>Other</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Preferred Date</label>
+            <input type="date" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600" />
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Preferred Time</label>
+            <select class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600">
+              <option>Select time</option>
+              <option>9:00 AM</option>
+              <option>10:00 AM</option>
+              <option>11:00 AM</option>
+              <option>2:00 PM</option>
+              <option>3:00 PM</option>
+              <option>4:00 PM</option>
+            </select>
+          </div>
+          
+          <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Special Instructions</label>
+            <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Any special requirements or notes..."></textarea>
+          </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+          <button type="submit" class="bg-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-700 transition-colors">Book Appointment</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center mb-4">
+            <img class="h-8 w-auto" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Pet Shop Logo" />
+            <span class="ml-2 font-bold text-xl">Paws & Whiskers</span>
+          </div>
+          <p class="text-gray-300 mb-4">Your trusted partner in pet care and supplies.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-facebook fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-instagram fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-twitter fa-lg"></i></a>
+            <a href="#" class="text-cyan-400 hover:text-cyan-300"><i class="fab fa-youtube fa-lg"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+            <li><a href="shop.html" class="text-gray-300 hover:text-white transition-colors">Shop</a></li>
+            <li><a href="services.html" class="text-gray-300 hover:text-white transition-colors">Services</a></li>
+            <li><a href="about.html" class="text-gray-300 hover:text-white transition-colors">About</a></li>
+            <li><a href="index.html#contact" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Services</h3>
+          <ul class="space-y-2">
+            <li><a href="#grooming" class="text-gray-300 hover:text-white transition-colors">Grooming</a></li>
+            <li><a href="#veterinary" class="text-gray-300 hover:text-white transition-colors">Veterinary Care</a></li>
+            <li><a href="#training" class="text-gray-300 hover:text-white transition-colors">Training</a></li>
+            <li><a href="#boarding" class="text-gray-300 hover:text-white transition-colors">Boarding</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Pet Adoption</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="font-semibold text-lg mb-4">Newsletter</h3>
+          <p class="text-gray-300 mb-4">Subscribe for updates and special offers!</p>
+          <form class="flex">
+            <input type="email" placeholder="Your email" class="px-3 py-2 rounded-l-lg text-gray-800 focus:outline-none flex-1" />
+            <button type="submit" class="bg-yellow-400 text-gray-800 px-4 py-2 rounded-r-lg hover:bg-yellow-500 transition-colors">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+        <p class="text-gray-400">&copy; 2024 Paws & Whiskers. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+ 
+
+  <!-- Mobile Bottom Navigation -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+    <div class="flex justify-around py-2">
+      <a href="index.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-home text-lg"></i>
+        <span class="text-xs mt-1">Home</span>
+      </a>
+      <a href="shop.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-shopping-bag text-lg"></i>
+        <span class="text-xs mt-1">Shop</span>
+      </a>
+      <a href="services.html" class="flex flex-col items-center text-purple-600">
+        <i class="fas fa-cut text-lg"></i>
+        <span class="text-xs mt-1">Services</span>
+      </a>
+      <a href="contact.html" class="flex flex-col items-center text-gray-600 hover:text-purple-600 transition-colors">
+        <i class="fas fa-phone text-lg"></i>
+        <span class="text-xs mt-1">Contact</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Cart functionality
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let cartCount = 0;
+    const cartCountSpan = document.getElementById('cart-count');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const clearCartBtn = document.getElementById('clear-cart');
+    const closeCartBtn = document.getElementById('close-cart');
+    const cartBtn = document.getElementById('cart-btn');
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Cart functions
+    function updateCartDisplay() {
+      // Ensure cart is an array
+      if (!Array.isArray(cart)) {
+        cart = [];
+      }
+      
+      // Validate cart items and ensure proper data types
+      cart = cart.filter(item => {
+        if (!item || typeof item.name !== 'string') return false;
+        
+        // Ensure price is a number
+        const price = parseFloat(item.price);
+        if (isNaN(price) || price <= 0) return false;
+        
+        // Ensure quantity is a number and positive
+        const quantity = parseInt(item.quantity);
+        if (isNaN(quantity) || quantity <= 0) return false;
+        
+        // Update the item with proper data types
+        item.price = price;
+        item.quantity = quantity;
+        
+        return true;
+      });
+      
+      cartCount = cart.reduce((total, item) => total + (item.quantity || 0), 0);
+      cartCountSpan.textContent = cartCount;
+      
+      // Save cart to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div id="empty-cart" class="text-center py-8">
+            <i class="fas fa-shopping-cart text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">Your cart is empty</p>
+          </div>
+        `;
+        cartTotal.textContent = '$0.00';
+        checkoutBtn.disabled = true;
+      } else {
+        const total = cart.reduce((sum, item) => {
+          const price = parseFloat(item.price) || 0;
+          const quantity = parseInt(item.quantity) || 0;
+          return sum + (price * quantity);
+        }, 0);
+        cartTotal.textContent = `$${total.toFixed(2)}`;
+        checkoutBtn.disabled = false;
+        
+        cartItems.innerHTML = cart.map((item, index) => `
+          <div class="flex items-center space-x-4 mb-4 p-4 bg-gray-50 rounded-lg">
+            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800">${item.name}</h4>
+              <p class="text-purple-600 font-bold">$${item.price}</p>
+              <div class="flex items-center space-x-2 mt-2">
+                <button onclick="updateQuantity(${index}, -1)" class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                  <i class="fas fa-minus text-xs"></i>
+                </button>
+                <span class="w-4 text-center">${item.quantity}</span>
+                <button onclick="updateQuantity(${index}, 1)" class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors">
+                  <i class="fas fa-plus text-xs"></i>
+                </button>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function updateQuantity(index, change) {
+      cart[index].quantity += change;
+      
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      
+      updateCartDisplay();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartDisplay();
+      // Clear from localStorage
+      localStorage.removeItem('cart');
+    }
+
+    function openCart() {
+      cartSidebar.classList.remove('translate-x-full');
+      cartOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      cartSidebar.classList.add('translate-x-full');
+      cartOverlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Event listeners
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+    clearCartBtn.addEventListener('click', clearCart);
+    checkoutBtn.addEventListener('click', () => {
+      if (cart.length > 0) {
+        alert('Thank you for your order! Total: $' + cartTotal.textContent.replace('$', ''));
+        clearCart();
+        closeCart();
+        // Clear from localStorage after checkout
+        localStorage.removeItem('cart');
+      }
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Booking form
+    document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for your booking request! We will contact you soon to confirm your appointment.');
+      this.reset();
+    });
+
+    // Newsletter form
+    document.querySelectorAll('form').forEach(form => {
+      if (form.querySelector('input[type="email"]') && !form.querySelector('select')) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = this.querySelector('input[type="email"]').value;
+          if (email) {
+            alert('Thank you for subscribing to our newsletter!');
+            this.reset();
+          }
+        });
+      }
+    });
+
+    // Initialize cart display
+    updateCartDisplay();
+  </script>
+</body>
+</html> 
